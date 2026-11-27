@@ -9,6 +9,7 @@
 let drawTimer = 0;
   let cropCandidateKey = '';
   let cropCandidateCount = 0;
+  let cropDetectionFinished = false;
 let appliedCropKey = '';
 let cropVideo = null;
 let cropDetectionVideoKey = '';
@@ -176,10 +177,18 @@ if (videoId !== cropDetectionVideoKey) {
   cropDetectionVideoKey = videoId;
   cropCandidateKey = '';
   cropCandidateCount = 0;
+  cropDetectionFinished = false;
   cropVideo = video;
   appliedCropKey = 'none';
 }
 if (player.classList.contains('ad-showing')) return;
+if (cropDetectionFinished) return;
+if (video.currentTime >= 10) {
+  cropDetectionFinished = true;
+  cropCandidateKey = '';
+  cropCandidateCount = 0;
+  return;
+}
 if (cropVideo !== video) {
   clearCrop(cropVideo);
   cropVideo = video;

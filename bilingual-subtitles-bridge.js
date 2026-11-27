@@ -5,7 +5,7 @@ const SETTINGS_SOURCE = 'YTools++-settings';
 const MAX_CUE_CACHE = 8;
 const TRANSLATION_IDLE_TIMEOUT_MS = 45_000;
 const CAPTION_DEBUG_ENABLED = () => window.__YT_TOOLKIT_CAPTION_DEBUG__ === true;
-const RGB_MODES = new Set(['off', 'rainbow', 'gradient', 'wave', 'wave-right', 'pulse']);
+const RGB_MODES = new Set(['off', 'rainbow', 'gradient', 'wave', 'wave-right', 'pulse', 'wave-glow', 'wave-right-glow']);
   const pageFetch = window.fetch.bind(window);
   let settings = { enabled: true, language: 'zh-Hant', googleTranslateEnabled: false };
   let captionsDefaultedVideoId = '';
@@ -40,6 +40,10 @@ let sourceLine = null;
 let sourceStatus = null;
 let translatedLine = null;
 let translatedText = null;
+let translatedGlow = null;
+let translatedCaption = null;
+let renderedGlowText = '';
+let renderedGlowDirection = '';
   let progressElement = null;
   let progressLabel = null;
   let progressFill = null;
@@ -75,6 +79,9 @@ let activeTranslationRequestKey = '';
 let sourceTranscriptFetch = null;
 let watchingVideo = false;
 let captionTrackPollTimer = 0;
+let nativeTranslationRevertTimer = 0;
+let nativeTranslationRevertKey = '';
+let nativeTranslationRevertAttempts = 0;
 
 window.addEventListener('resize', () => {
   if (progressElement && !progressElement.hidden) positionProgressToast();
@@ -466,14 +473,41 @@ function updateOverlay() {
     }
   // Keep translated cues at their original timing granularity. Grouping this
   // track independently can concatenate several lyric lines into one long cue.
-    if (translatedText) translatedText.textContent = groupAt(cues.translated, time)?.text || '';
+    if (translatedCaption) {
+      const text = groupAt(cues.translated, time)?.text || '';
+      translatedCaption.textContent = text;
+      updateFlowingGlow(text);
+    }
     fitLine(sourceLine);
     fitLine(translatedLine);
-    translatedLine.hidden = !translatedLine.textContent;
-    overlay.hidden = !sourceLine.textContent && !translatedLine.textContent && !progressState;
-    overlay.setAttribute('aria-label', [translatedLine.textContent, sourceLine.textContent].filter(Boolean).join('. '));
+    translatedLine.hidden = !translatedCaption?.textContent;
+    overlay.hidden = !sourceLine.textContent && !translatedCaption?.textContent && !progressState;
+    overlay.setAttribute('aria-label', [translatedCaption?.textContent, sourceLine.textContent].filter(Boolean).join('. '));
     player?.classList.toggle('yt-toolkit-bilingual-active', !overlay.hidden);
   }
+
+function updateFlowingGlow(text) {
+  if (!translatedGlow || !translatedLine) return;
+  const direction = translatedLine.classList.contains('rgb-wave-right-glow') ? 'right' : 'left';
+  if (text === renderedGlowText && direction === renderedGlowDirection) return;
+
+  renderedGlowText = text;
+  renderedGlowDirection = direction;
+  translatedGlow.replaceChildren();
+  if (!text) return;
+
+  const graphemes = typeof Intl.Segmenter === 'function'
+    ? [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)].map(part => part.segment)
+    : Array.from(text);
+  const durationSeconds = 2.4;
+  graphemes.forEach((grapheme, index) => {
+    const character = document.createElement('span');
+    const phaseIndex = direction === 'right' ? graphemes.length - index - 1 : index;
+    character.textContent = grapheme;
+    character.style.animationDelay = `${-(phaseIndex * durationSeconds / graphemes.length)}s`;
+    translatedGlow.append(character);
+  });
+}
 
   function getTranslationFailureLabelKey(message) {
     if (message.reason === 'missing-api-key' || message.status === 'missing-key') return 'missingApiKey';
@@ -719,11 +753,12 @@ function fitLine(line) {
     }
   }
 
-  function applyTranslatedSubtitleMode(mode) {
+function applyTranslatedSubtitleMode(mode) {
     if (!translatedLine) return;
-    translatedLine.classList.remove('rgb-rainbow', 'rgb-gradient', 'rgb-wave', 'rgb-wave-right', 'rgb-pulse');
-    if (RGB_MODES.has(mode) && mode !== 'off') translatedLine.classList.add(`rgb-${mode}`);
-  }
+    translatedLine.classList.remove('rgb-rainbow', 'rgb-gradient', 'rgb-wave', 'rgb-wave-right', 'rgb-pulse', 'rgb-wave-glow', 'rgb-wave-right-glow');
+if (RGB_MODES.has(mode) && mode !== 'off') translatedLine.classList.add(`rgb-${mode}`);
+updateFlowingGlow(renderedGlowText);
+}
 
   function createOverlay() {
     if (!player) return;
@@ -738,15 +773,22 @@ function fitLine(line) {
  .source-status { margin:0 auto 3px; color:#ffe680; font:600 12px/1.2 Arial,Roboto,sans-serif; text-shadow:0 1px 2px #000; }
         .translated { color:var(--translated-subtitle-color,#ffe680); }
         .translated.rgb-rainbow { animation:translated-rgb 6s linear infinite; }
-        .translated.rgb-gradient .translated-text,.translated.rgb-wave .translated-text,.translated.rgb-wave-right .translated-text { display:inline-block; text-shadow:none; filter:drop-shadow(0 1px 1px #000); background-image:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); background-clip:text; -webkit-background-clip:text; color:transparent; -webkit-text-fill-color:transparent; }
-        .translated.rgb-wave .translated-text { background-size:200% 100%; background-position:0% 0; animation:translated-wave 3s linear infinite; }
-        .translated.rgb-wave-right .translated-text { background-size:200% 100%; background-position:200% 0; animation:translated-wave-right 3s linear infinite; }
+        .translated.rgb-gradient .translated-caption,.translated.rgb-wave .translated-caption,.translated.rgb-wave-right .translated-caption { display:inline-block; text-shadow:none; filter:drop-shadow(0 1px 1px #000); background-image:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); background-clip:text; -webkit-background-clip:text; color:transparent; -webkit-text-fill-color:transparent; }
+        .translated.rgb-gradient .translated-caption { text-shadow:none; }
+        .translated.rgb-wave .translated-caption { background-size:200% 100%; background-position:0% 0; animation:translated-wave 3s linear infinite; }
+        .translated.rgb-wave-right .translated-caption { background-size:200% 100%; background-position:200% 0; animation:translated-wave-right 3s linear infinite; }
+        .translated.rgb-wave-glow .translated-text,.translated.rgb-wave-right-glow .translated-text { position:relative; display:inline-block; isolation:isolate; }
+        .translated.rgb-wave-glow .translated-glow,.translated.rgb-wave-right-glow .translated-glow { position:absolute; inset:0; z-index:0; display:block; white-space:inherit; pointer-events:none; }
+        .translated-glow { display:none; }
+        .translated.rgb-wave-glow .translated-glow span,.translated.rgb-wave-right-glow .translated-glow span { display:inline; animation:translated-glow-color 2.4s linear infinite; text-shadow:0 0 3px currentColor,0 0 8px currentColor,0 0 16px currentColor; }
+        .translated.rgb-wave-glow .translated-caption,.translated.rgb-wave-right-glow .translated-caption { position:relative; z-index:1; color:var(--translated-subtitle-color,#ffe680); -webkit-text-fill-color:currentColor; }
         .translated.rgb-pulse { animation:translated-rgb-pulse 2.4s ease-in-out infinite; }
         @keyframes translated-rgb { 0%,100% { color:#f00; } 17% { color:#ff0; } 33% { color:#0f0; } 50% { color:#0ff; } 67% { color:#00f; } 83% { color:#f0f; } }
         @keyframes translated-wave { from { background-position:0% 0; } to { background-position:200% 0; } }
         @keyframes translated-wave-right { from { background-position:200% 0; } to { background-position:0% 0; } }
+        @keyframes translated-glow-color { 0%,100% { color:#f00; } 16.67% { color:#ff0; } 33.33% { color:#0f0; } 50% { color:#0ff; } 66.67% { color:#00f; } 83.33% { color:#f0f; } }
         @keyframes translated-rgb-pulse { 0%,100% { text-shadow:0 0 2px #f00,0 0 5px #f00,0 1px 2px #000,1px 0 2px #000,-1px 0 2px #000,0 -1px 2px #000; } 33% { text-shadow:0 0 5px #0f0,0 0 12px #0f0,0 1px 2px #000,1px 0 2px #000,-1px 0 2px #000,0 -1px 2px #000; } 67% { text-shadow:0 0 5px #00f,0 0 12px #00f,0 1px 2px #000,1px 0 2px #000,-1px 0 2px #000,0 -1px 2px #000; } }
-        @media (prefers-reduced-motion:reduce) { .translated.rgb-rainbow,.translated.rgb-wave,.translated.rgb-wave-right,.translated.rgb-pulse,.translated.rgb-wave .translated-text,.translated.rgb-wave-right .translated-text { animation:none; } }
+        @media (prefers-reduced-motion:reduce) { .translated.rgb-rainbow,.translated.rgb-wave,.translated.rgb-wave-right,.translated.rgb-pulse,.translated.rgb-wave-glow .translated-glow span,.translated.rgb-wave-right-glow .translated-glow span,.translated.rgb-wave .translated-caption,.translated.rgb-wave-right .translated-caption { animation:none; } }
  @media (max-width:600px) { :host { bottom:58px; width:calc(100vw - 16px); } .line { font-size:clamp(14px,4.2vw,24px); } }
     `;
   const wrapper = document.createElement('div');
@@ -756,9 +798,15 @@ function fitLine(line) {
     sourceLine = document.createElement('div');
     translatedLine = document.createElement('div');
     translatedText = document.createElement('span');
+    translatedGlow = document.createElement('span');
+    translatedCaption = document.createElement('span');
     sourceLine.className = 'line';
     translatedLine.className = 'line translated';
     translatedText.className = 'translated-text';
+    translatedGlow.className = 'translated-glow';
+    translatedGlow.setAttribute('aria-hidden', 'true');
+    translatedCaption.className = 'translated-caption';
+    translatedText.append(translatedGlow, translatedCaption);
     translatedLine.append(translatedText);
     translatedLine.style.setProperty('--translated-subtitle-color', settings.translatedSubtitleColor);
     applyTranslatedSubtitleMode(settings.rgbSubtitleMode);
@@ -795,6 +843,10 @@ function fitLine(line) {
   sourceStatus = null;
   translatedLine = null;
   translatedText = null;
+  translatedGlow = null;
+  translatedCaption = null;
+  renderedGlowText = '';
+  renderedGlowDirection = '';
     progressElement = null;
     progressLabel = null;
     progressFill = null;
@@ -968,6 +1020,62 @@ function fitLine(line) {
       programmaticCaptionTrackTimer = 0;
       return false;
     }
+  }
+
+  function revertNativeAutoTranslatedCaption(track) {
+    const translationLanguage = track?.translationLanguage?.languageCode;
+    if (!settings.enabled || !translationLanguage) return false;
+
+    const originalTrack = { ...track };
+    delete originalTrack.translationLanguage;
+    const originalTrackId = getCaptionTrackSelectionId(originalTrack);
+    if (originalTrackId === 'off') return false;
+
+    const translatedTrackId = getCaptionTrackSelectionId(track);
+    const retryKey = `${currentVideoId}|${translatedTrackId}`;
+    if (nativeTranslationRevertKey !== retryKey) {
+      window.clearTimeout(nativeTranslationRevertTimer);
+      nativeTranslationRevertTimer = 0;
+      nativeTranslationRevertKey = retryKey;
+      nativeTranslationRevertAttempts = 0;
+    }
+
+    const selectionChanged = manualCaptionTrackVideoId !== currentVideoId
+      || manualCaptionTrackId !== originalTrackId;
+    setManualCaptionTrack(originalTrack, originalTrackId);
+    if (selectionChanged) saveCaptionSelection(originalTrack, originalTrackId);
+
+    logCaptionDebug('native-auto-translation-reverting', {
+      sourceLanguage: originalTrack.languageCode || '',
+      targetLanguage: translationLanguage,
+    });
+
+    if (setPlayerCaptionTrack(originalTrack)) {
+      window.clearTimeout(nativeTranslationRevertTimer);
+      nativeTranslationRevertTimer = 0;
+      nativeTranslationRevertKey = '';
+      nativeTranslationRevertAttempts = 0;
+      window.setTimeout(sync, 0);
+      return true;
+    }
+
+    if (!nativeTranslationRevertTimer && nativeTranslationRevertAttempts < 10) {
+      nativeTranslationRevertAttempts++;
+      const videoId = currentVideoId;
+      nativeTranslationRevertTimer = window.setTimeout(() => {
+        nativeTranslationRevertTimer = 0;
+        const activeTrack = getPlayerCaptionTrack();
+        if (currentVideoId === videoId
+          && getCaptionTrackSelectionId(activeTrack) === translatedTrackId
+          && activeTrack.translationLanguage?.languageCode) {
+          revertNativeAutoTranslatedCaption(activeTrack);
+        } else {
+          nativeTranslationRevertKey = '';
+          nativeTranslationRevertAttempts = 0;
+        }
+      }, 100);
+    }
+    return false;
   }
 
   function markProgrammaticCaptionTrack(trackId) {
@@ -1593,6 +1701,15 @@ function sync() {
     }
   player?.classList.toggle('yt-toolkit-bilingual-enabled', settings.enabled);
   restoreSavedCaptionSelection();
+  const activeCaptionTrack = getPlayerCaptionTrack();
+  if (settings.enabled && activeCaptionTrack.translationLanguage?.languageCode) {
+    revertNativeAutoTranslatedCaption(activeCaptionTrack);
+  } else if (nativeTranslationRevertTimer || nativeTranslationRevertKey) {
+    window.clearTimeout(nativeTranslationRevertTimer);
+    nativeTranslationRevertTimer = 0;
+    nativeTranslationRevertKey = '';
+    nativeTranslationRevertAttempts = 0;
+  }
   ensureNativeCaptionsDefault();
     if (!settings.enabled || !player || !video || player.classList.contains('ad-showing')) {
       removeOverlay();
@@ -1640,6 +1757,10 @@ function sync() {
   }
 
 function handleCaptionTrackChange(nextTrack, nextTrackId = getCaptionTrackSelectionId(nextTrack), restorePreference = false) {
+    if (settings.enabled && nextTrack?.translationLanguage?.languageCode) {
+      revertNativeAutoTranslatedCaption(nextTrack);
+      return true;
+    }
     if (nextTrackId === currentCaptionTrackId) return false;
     const manualSelection = programmaticCaptionTrackId !== nextTrackId;
     const nextSourceTrackId = getSourceTrackId(nextTrack || getPreferredSourceTrack());

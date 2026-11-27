@@ -17,7 +17,7 @@ YTools++ 是一款以 YouTube 觀看體驗為核心的 Chromium 擴充功能。�
 | 功能 | 說明 |
 | --- | --- |
 | 🎬 **觀看體驗** | Shorts 連結可改開一般影片；設定偏好畫質、處理繼續觀看提示，並替頻道連結顯示頻道名稱。 |
-| 🖥️ **播放器版面** | 劇院／滿版模式；偵測黑邊後調整畫面，並可選擇黑色或模糊背景。 |
+| 🖥️ **播放器版面** | 劇院／滿版模式；只在影片前 10 秒偵測黑邊並保留裁切結果，並可選擇黑色或模糊背景。 |
 | 💬 **雙語字幕** | 同步顯示原文與翻譯字幕，可選目標語言及字幕外觀；翻譯引擎支援 Google 翻譯與 Gemini。 |
 | 🚀 **廣告與片段略過** | 嘗試略過 YouTube 可略過廣告，並自動查詢及略過 SponsorBlock 標記的片段。 |
 | 📶 **連線速度** | 在播放器中顯示 YouTube Stats for Nerds 的連線速度。 |
@@ -26,6 +26,8 @@ YTools++ 是一款以 YouTube 觀看體驗為核心的 Chromium 擴充功能。�
 ### 字幕與資料
 
 - 可選 Google 翻譯（預設）或 Gemini 作為字幕翻譯引擎。
+- YTools++ 啟用時若選到 YouTube 原生自動翻譯字幕，會自動切回原文字幕軌。
+- 字幕效果另提供 RGB 呼吸光暈，以及向左／向右流動光暈；流動光暈保留自訂字色，只讓光暈移動。
 - Gemini API 金鑰與翻譯快取儲存在本機，不會同步。
 - 翻譯時，字幕內容會送至所選的翻譯服務；SponsorBlock 會使用影片識別碼查詢片段資料。
 - 可記住每支影片選用的字幕軌，並於之後播放時還原。
@@ -61,7 +63,7 @@ YTools++ is a Chromium extension focused on making YouTube more comfortable to u
 | Feature | Description |
 | --- | --- |
 | 🎬 **Viewing experience** | Open Shorts links in the regular player, choose preferred playback quality, handle continue-watching prompts, and show channel names in channel links. |
-| 🖥️ **Player layout** | Theater and immersive modes; detect black bars and adjust the frame, with optional black or blurred backgrounds. |
+| 🖥️ **Player layout** | Theater and immersive modes; detect black bars only during the first 10 seconds and keep the resulting crop, with optional black or blurred backgrounds. |
 | 💬 **Bilingual captions** | Show original and translated captions together, choose a target language and caption style, and translate with Google Translate or Gemini. |
 | 🚀 **Ad and segment skipping** | Attempt to skip YouTube ads when controls are available, and automatically look up and skip SponsorBlock segments. |
 | 📶 **Connection speed** | Display the connection speed reported by YouTube Stats for Nerds in the player. |
@@ -70,6 +72,8 @@ YTools++ is a Chromium extension focused on making YouTube more comfortable to u
 ### Captions and data
 
 - Choose Google Translate (default) or Gemini as the caption translation service.
+- When YTools++ is enabled, selecting YouTube's native auto-translated captions switches back to the original track.
+- Caption effects also include RGB breathing glow and left-/right-flowing glow; flowing glow preserves the custom text color and animates only the halo.
 - The Gemini API key and translation cache are stored locally and are not synced.
 - Caption text is sent to the selected translation service when you request a translation. SponsorBlock uses the video ID to look up segment data.
 - The selected caption track can be remembered per video and restored on a later visit.

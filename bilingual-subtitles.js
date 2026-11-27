@@ -2,7 +2,7 @@
   'use strict';
 
 const DEFAULTS = { dualSubtitles: true, subtitleLanguage: 'zh-Hant', translatedSubtitleColor: '#ffe680', rgbSubtitleMode: 'off', rgbSubtitleAnimation: false, uiLanguage: 'system' };
-const RGB_MODES = new Set(['off', 'rainbow', 'gradient', 'wave', 'wave-right', 'pulse']);
+const RGB_MODES = new Set(['off', 'rainbow', 'gradient', 'wave', 'wave-right', 'pulse', 'wave-glow', 'wave-right-glow']);
 const CAPTION_SELECTION_CACHE_KEY = 'manualCaptionTrackSelectionCacheV1';
 const MAX_SAVED_CAPTION_SELECTIONS = 100;
   let settings = { ...DEFAULTS };
