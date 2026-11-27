@@ -1,4 +1,4 @@
-# YToolsPP
+# YTools++
 
 **讓 YouTube 更符合你的觀看習慣。**
 
@@ -10,7 +10,7 @@
 
 ## 繁體中文
 
-YToolsPP 是一款以 YouTube 觀看體驗為核心的 Chromium 擴充功能。從 Shorts、播放器版面到雙語字幕，常用控制都集中在工具列彈出視窗，設定會自動儲存並即時套用。
+YTools++ 是一款以 YouTube 觀看體驗為核心的 Chromium 擴充功能。從 Shorts、播放器版面到雙語字幕，常用控制都集中在工具列彈出視窗，設定會自動儲存並即時套用。
 
 ### 功能介紹
 
@@ -34,7 +34,7 @@ YToolsPP 是一款以 YouTube 觀看體驗為核心的 Chromium 擴充功能。�
 
 1. 開啟 `chrome://extensions` 或 `brave://extensions`。
 2. 開啟「開發人員模式」，選擇「載入未封裝項目」。
-3. 選取 YToolsPP 專案資料夾。
+3. 選取 YTools++ 專案資料夾。
 4. 點選工具列上的擴充功能圖示，調整功能與外觀設定。
 
 設定會自動儲存並即時套用，不需要重新載入 YouTube 分頁。安裝或更新擴充功能後，請重新載入擴充功能，並重新整理已開啟的 YouTube 分頁一次。
@@ -54,7 +54,7 @@ YToolsPP 是一款以 YouTube 觀看體驗為核心的 Chromium 擴充功能。�
 
 ## English
 
-YToolsPP is a Chromium extension focused on making YouTube more comfortable to use. From Shorts and player layout to bilingual captions, its everyday controls live in the toolbar popup, with settings saved automatically and applied live.
+YTools++ is a Chromium extension focused on making YouTube more comfortable to use. From Shorts and player layout to bilingual captions, its everyday controls live in the toolbar popup, with settings saved automatically and applied live.
 
 ### Features
 
@@ -78,7 +78,7 @@ YToolsPP is a Chromium extension focused on making YouTube more comfortable to u
 
 1. Open `chrome://extensions` or `brave://extensions`.
 2. Enable **Developer mode**, then select **Load unpacked**.
-3. Select the YToolsPP project folder.
+3. Select the YTools++ project folder.
 4. Open the extension from the toolbar to adjust features and appearance.
 
 Settings are saved automatically and applied live; YouTube tabs do not need to be reloaded. After installing or updating the extension, reload the extension and refresh any already-open YouTube tabs once.
