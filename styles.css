@@ -1,0 +1,200 @@
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater]:not([is-live-content]) #full-bleed-container,
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater]:not([is-live-content]) #movie_player video,
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater]:not([is-live-content]) ytd-player video {
+  min-height: 100vh !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  width: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  object-fit: contain !important;
+}
+
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater]:not([is-live-content]) #movie_player,
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater]:not([is-live-content]) #full-bleed-container {
+  background-color: #000 !important;
+}
+
+/* Keep live video inside its player column; the chat remains a separate full-height column. */
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater][is-live-content] #full-bleed-container,
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater][is-live-content] #movie_player video,
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater][is-live-content] ytd-player video {
+  min-height: 100vh !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  width: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  object-fit: contain !important;
+}
+
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater][is-live-content] #movie_player,
+html.yt-utility-immersive:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater][is-live-content] #full-bleed-container {
+  background-color: #000 !important;
+}
+
+html.yt-utility-immersive.yt-toolkit-blur-background:not(.yt-toolkit-miniplayer) ytd-watch-flexy[theater]:not([is-live-content]) #movie_player {
+  position: relative !important;
+  isolation: isolate !important;
+}
+html.yt-utility-immersive.yt-toolkit-blur-background:not(.yt-toolkit-miniplayer) #yt-toolkit-video-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  pointer-events: none !important;
+  object-fit: cover !important;
+  filter: blur(32px) brightness(.52) !important;
+  transform: scale(1.12) !important;
+}
+html.yt-utility-immersive.yt-toolkit-blur-background:not(.yt-toolkit-miniplayer) #movie_player video {
+  position: relative !important;
+  z-index: 1 !important;
+}
+html.yt-utility-immersive.yt-toolkit-auto-crop:not(.yt-toolkit-miniplayer) #movie_player video {
+  clip-path: inset(var(--yt-toolkit-crop-inset, 0));
+  scale: var(--yt-toolkit-crop-scale, 1) !important;
+  transform-origin: var(--yt-toolkit-crop-origin-x, 50%) var(--yt-toolkit-crop-origin-y, 50%) !important;
+  transition: none !important;
+}
+
+html.yt-utility-immersive #masthead-container {
+  transition: transform .2s ease, opacity .2s ease !important;
+}
+html.yt-utility-immersive ytd-app:not([guide-persistent-and-visible]) #masthead-container {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 2200 !important;
+}
+html.yt-utility-immersive ytd-app:not([guide-persistent-and-visible]) ytd-page-manager {
+  margin-top: 0 !important;
+}
+html.yt-utility-content-hidden #masthead-container:not(:hover):not(:focus-within) {
+  transform: translateY(-100%) !important;
+  opacity: 0 !important;
+}
+html.yt-utility-content-hidden ytd-watch-flexy[theater]:not(:has(#chat-container)) #below,
+html.yt-utility-content-hidden ytd-watch-flexy[theater]:not(:has(#chat-container)) #secondary {
+  visibility: hidden !important;
+}
+
+/* YouTube pins #chat at top:56px; lift it to the viewport top and fill its height. */
+html.yt-utility-immersive ytd-watch-flexy[theater][live-chat-present-and-expanded] #chat.ytd-live-chat-frame,
+html.yt-utility-immersive ytd-watch-flexy[theater][live-chat-present-and-expanded] ytd-live-chat-frame#chat {
+  top: 0 !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+  z-index: 2201 !important;
+}
+
+#yt-toolkit-speed-display {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  height: 100%;
+  padding: 0 8px;
+  color: #f0eff5;
+  font: 600 12px/1 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  user-select: none;
+}
+#yt-toolkit-speed-display.yt-toolkit-speed-overlay {
+  position: absolute;
+  right: 12px;
+  bottom: 60px;
+  z-index: 10;
+  height: auto;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: rgba(20, 20, 24, .78);
+}
+
+#yt-toolkit-translation-progress {
+  position: absolute;
+  z-index: 2202;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(20, 18, 28, .92);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, .35);
+  font: 600 13px/1.25 Arial, Roboto, sans-serif;
+  text-align: left;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#yt-toolkit-translation-progress[hidden] {
+  display: none;
+}
+.yt-toolkit-translation-progress__track {
+  width: 48px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .24);
+}
+.yt-toolkit-translation-progress__fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #b7a0ff;
+  transition: width .2s ease;
+}
+.yt-toolkit-translation-progress__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.yt-toolkit-translation-progress__value {
+  color: #d9d1ef;
+  font-variant-numeric: tabular-nums;
+}
+
+#movie_player.yt-toolkit-bilingual-enabled .ytp-caption-window-container,
+#movie_player.yt-toolkit-bilingual-active .ytp-caption-window-container {
+  display: none !important;
+}
+
+/* Keep YouTube's end-of-video next-up card readable over bright footage. */
+#movie_player:has(.ytp-autonav-endscreen-upnext-container) .ytp-autonav-endscreen-countdown-overlay {
+  position: absolute !important;
+  z-index: 20 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0, 0, 0, .98) !important;
+  opacity: 1 !important;
+}
+
+.ytp-autonav-endscreen-upnext-container,
+.ytp-upnext {
+  position: relative !important;
+  z-index: 21 !important;
+  box-sizing: border-box !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .95) !important;
+}
+
+.ytp-autonav-endscreen-upnext-container :is(.ytp-autonav-endscreen-upnext-header, .ytp-upnext-title, .ytp-upnext-author),
+.ytp-upnext :is(.ytp-upnext-title, .ytp-upnext-author) {
+  color: #fff !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .95) !important;
+}

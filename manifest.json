@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "111",
+  "name": "YTools++",
+  "version": "1.0",
+  "description": "YouTube playback and display utilities.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "YTools++",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png" },
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+    "js": ["content.js", "video-backdrop.js", "sponsorblock.js", "ad-skipper.js", "subtitle-progress-locale.js", "bilingual-subtitles.js"],
+    "css": ["styles.css"],
+    "run_at": "document_start"
+  }, {
+    "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+    "js": ["speed-display.js"],
+    "run_at": "document_idle",
+    "world": "MAIN"
+  }, {
+    "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+    "js": ["bilingual-subtitles-bridge.js"],
+    "run_at": "document_start",
+    "world": "MAIN"
+  }],
+  "background": { "service_worker": "background.js" },
+  "options_page": "popup.html",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["https://sponsor.ajay.app/*", "https://translate.googleapis.com/*", "https://generativelanguage.googleapis.com/*"]
+}

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>YTools++</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-mark" src="icons/icon48.png" alt="" aria-hidden="true">
+      <div><h1>YTools++</h1><p data-i18n="subtitle"></p></div>
+    </div>
+    <div class="credit-stack">
+      <p class="author-credit">Created by QQ7 ❤️</p>
+      <p id="versionLabel" class="version-label"></p>
+    </div>
+    <button id="preferencesToggle" class="icon-button" type="button" aria-controls="preferencesPanel" aria-expanded="false" data-i18n-aria-label="settings" data-i18n-title="settings" title="Preferences">⚙</button>
+  </header>
+
+  <main class="popup-content">
+  <p id="status" class="status-line" role="status" aria-live="polite" data-i18n="ready"></p>
+
+  <section class="panel" data-i18n-aria-label="features">
+    <div class="quality-row">
+      <label for="quality" data-i18n="qualityLabel"></label>
+      <select id="quality">
+        <option value="auto" data-i18n="qualityAuto"></option>
+        <option value="hd720">720p</option><option value="hd1080">1080p</option>
+        <option value="hd1440">1440p</option><option value="hd2160">2160p</option>
+      </select>
+    </div>
+    <div class="feature-list">
+      <div class="feature-item"><label class="feature-row"><input id="shorts" type="checkbox"><span data-i18n="shorts"></span></label><small data-i18n="shortsHelp"></small></div>
+      <div class="feature-item"><label class="feature-row"><input id="pausePrompt" type="checkbox"><span data-i18n="pausePrompt"></span></label><small data-i18n="pausePromptHelp"></small></div>
+      <div class="feature-item">
+        <div class="theater-controls">
+          <label class="feature-row"><input id="theater" type="checkbox"><span data-i18n="theater"></span></label>
+          <label class="player-background-control"><span data-i18n="playerBackground"></span><select id="playerBackground" data-i18n-aria-label="playerBackground"><option value="black" data-i18n="playerBackgroundBlack"></option><option value="blur" data-i18n="playerBackgroundBlur"></option></select></label>
+        </div>
+        <small data-i18n="theaterHelp"></small>
+        <small data-i18n="playerBackgroundPerformanceHelp"></small>
+      </div>
+      <div class="feature-item"><label class="feature-row"><input id="names" type="checkbox"><span data-i18n="names"></span></label><small data-i18n="namesHelp"></small></div>
+      <div class="feature-item"><label class="feature-row"><input id="speedDisplay" type="checkbox"><span data-i18n="speedDisplay"></span></label><small data-i18n="speedDisplayHelp"></small></div>
+      <div class="feature-item"><label class="feature-row"><input id="sponsorBlock" type="checkbox"><span data-i18n="sponsorBlock"></span></label><small data-i18n="sponsorBlockHelp"></small></div>
+      <div class="feature-item"><label class="feature-row"><input id="adSkip" type="checkbox"><span data-i18n="adSkip"></span></label><small data-i18n="adSkipHelp"></small></div>
+      <div class="feature-item">
+        <div class="dual-subtitle-controls">
+          <label class="feature-row"><input id="dualSubtitles" type="checkbox"><span data-i18n="dualSubtitles"></span></label>
+          <select id="subtitleLanguage" class="subtitle-language-select" data-i18n-aria-label="subtitleLanguage">
+            <option value="zh-Hant">繁體中文</option>
+            <option value="en">English</option>
+            <option value="zh-Hans">简体中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="pt">Português</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+            <option value="hi">हिन्दी</option>
+            <option value="it">Italiano</option>
+            <option value="th">ไทย</option>
+            <option value="vi">Tiếng Việt</option>
+        </select>
+      </div>
+      <details class="subtitle-advanced">
+        <summary data-i18n="subtitleAdvancedSettings"></summary>
+        <div class="subtitle-advanced-content">
+      <div class="subtitle-color-control">
+            <label for="translatedSubtitleColor" data-i18n="translatedSubtitleColor"></label>
+            <div class="subtitle-color-actions">
+              <input id="translatedSubtitleColor" type="color" value="#ffe680" data-i18n-aria-label="translatedSubtitleColor">
+              <button id="resetTranslatedSubtitleColor" class="subtitle-color-reset" type="button" data-i18n="resetDefault"></button>
+            </div>
+        </div>
+        <div class="rgb-subtitle-control">
+          <label for="rgbSubtitleMode" data-i18n="rgbSubtitleMode"></label>
+          <select id="rgbSubtitleMode" data-i18n-aria-label="rgbSubtitleMode">
+            <option value="off" data-i18n="rgbModeOff"></option>
+            <option value="rainbow" data-i18n="rgbModeRainbow"></option>
+            <option value="gradient" data-i18n="rgbModeGradient"></option>
+            <option value="wave" data-i18n="rgbModeWaveLeft"></option>
+            <option value="wave-right" data-i18n="rgbModeWaveRight"></option>
+            <option value="pulse" data-i18n="rgbModePulse"></option>
+          </select>
+        </div>
+        <div class="translation-engine-controls">
+          <label for="subtitleTranslator" data-i18n="subtitleTranslator"></label>
+          <select id="subtitleTranslator" data-i18n-aria-label="subtitleTranslator">
+            <option value="google" data-i18n="translatorGoogle"></option>
+            <option value="gemini" data-i18n="translatorGemini"></option>
+          </select>
+        </div>
+        <div id="geminiKeyRow" class="gemini-key-row" hidden>
+          <label for="geminiApiKey" data-i18n="geminiApiKey"></label>
+          <div class="gemini-key-entry">
+            <input id="geminiApiKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <button id="saveGeminiApiKey" class="gemini-save-button" type="button" data-i18n="saveGeminiApiKey"></button>
+          </div>
+          <small data-i18n="geminiApiKeyHelp"></small>
+        </div>
+        <div class="translation-cache-row">
+          <div class="translation-cache-details">
+            <span data-i18n="translationCache"></span>
+            <small id="translationCacheSize" aria-live="polite">—</small>
+          </div>
+          <button id="clearTranslationCache" class="cache-clear-button" type="button" data-i18n="clearTranslationCache"></button>
+        </div>
+      <small data-i18n="translationCacheHelp"></small>
+      <small data-i18n="dualSubtitlesHelp"></small>
+        </div>
+      </details>
+    </div>
+    </div>
+  </section>
+  </main>
+
+  <dialog id="preferencesPanel" class="settings-dialog" aria-labelledby="settings-title">
+    <div class="dialog-header">
+      <h2 id="settings-title" data-i18n="settings"></h2>
+      <button id="preferencesClose" class="icon-button" type="button" data-i18n-aria-label="close" data-i18n-title="close" title="Close">×</button>
+    </div>
+    <div class="select-row">
+      <label for="theme" data-i18n="theme"></label>
+      <select id="theme">
+        <option value="auto" data-i18n="themeAuto"></option>
+        <option value="light" data-i18n="themeLight"></option>
+        <option value="dark" data-i18n="themeDark"></option>
+      </select>
+    </div>
+<div class="select-row">
+<label for="language" data-i18n="language"></label>
+      <select id="language">
+        <option value="system" data-i18n="languageSystem"></option>
+        <option value="zh-Hant" data-i18n="languageTraditional"></option>
+        <option value="zh-Hans" data-i18n="languageSimplified"></option>
+        <option value="en" data-i18n="languageEnglish">English</option>
+</select>
+</div>
+</dialog>
+
+  <p class="footer" data-i18n="applyHelp"></p>
+
+  <script src="locale.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
